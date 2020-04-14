@@ -1,0 +1,26 @@
+{
+  "name": "vue-nui-cli",
+  "version": "0.1.2",
+  "description": "nui组件集合",
+  "main": "babel.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "nui": "./bin/nui",
+    "nui-add": "./bin/nui-add",
+    "nui-delete": "./bin/nui-delete",
+    "nui-list": "./bin/nui-list",
+    "nui-create": "./bin/nui-create"
+  },
+  "author": "luojiangfeng",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "download-git-repo": "^1.1.0",
+    "inquirer": "^6.2.2",
+    "ora": "^3.2.0",
+    "shelljs": "^0.8.3"
+  }
+}

@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+const program = require("commander")
+const inquirer = require("inquirer")
+const chalk = require("chalk")
+const ora = require("ora")
+const download = require("download-git-repo")
+const tplObj = require(`${__dirname}/../template`)
+
+require("shelljs/global")
+
+program.usage("[project-name]")
+program.parse(process.argv)
+// 当没有输入参数的时候给个提示
+if (program.args.length < 1) return program.help()
+
+// 好比 vue init webpack project-name 的命令一样，第一个参数是 webpack，第二个参数是 project-name
+// let templateName = program.args[0]
+let projectName = program.args[0]
+// 小小校验一下参数
+if (!projectName) {
+  console.log(chalk.red("\n 项目名不能为空! \n "))
+  return
+}
+
+// 自定义交互式命令行的问题及简单的校验
+let question = {
+  type: "list",
+  name: "templateType",
+  message: "请选择模板类型：",
+  choices: [
+    { name: "带演示demo文件及文档的项目", value: 0 },
+    { name: "纯净、不带demo文件的项目", value: 1 },
+  ],
+}
+
+inquirer.prompt(question).then((answers) => {
+  // console.log(answers)
+  if (answers.templateType === 0) {
+    downloadTpl("luojiangfeng/nui")
+  } else if (answers.templateType === 1) {
+    downloadTpl("luojiangfeng/nui-template-simple")
+  }
+})
+
+function downloadTpl(url) {
+  console.log(chalk.white("\n 开始创建... \n"))
+  // 出现加载图标
+  const spinner = ora("下载中...")
+  spinner.start()
+  // 执行下载方法并传入参数
+  download(url, projectName, (err) => {
+    if (err) {
+      spinner.fail()
+      console.log(chalk.red(`创建失败. ${err}`))
+      return
+    }
+    // 结束加载图标
+    spinner.succeed()
+    let enterDirStr = `cd ${projectName}`
+
+    console.log(chalk.green(`\n 成功创建项目"${projectName}!"`))
+    console.log(chalk.blue("\n 开始安装npm插件..."))
+
+    exec(`${enterDirStr} && npm install`, function (status, output) {
+      console.log(chalk.green("\n 安装完成"))
+      console.log("\n 可通过以下命令进入项目并执行：")
+      console.log(`\n $ ${enterDirStr} \n`)
+      console.log(`\n $ npm run serve \n`)
+    })
+  })
+}
